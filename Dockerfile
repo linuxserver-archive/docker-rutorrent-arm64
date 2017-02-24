@@ -9,6 +9,9 @@ LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DA
 # package version
 ARG MEDIAINF_VER="0.7.90"
 
+# copy patches
+COPY patches/ /defaults/patches/
+
 # install runtime packages
 RUN \
  apk add --no-cache \
@@ -61,6 +64,10 @@ RUN \
 	/defaults/rutorrent-conf/ && \
  rm -rf \
 	/defaults/rutorrent-conf/users && \
+
+# patch snoopy.inc for rss fix
+ cd /usr/share/webapps/rutorrent/php && \
+ patch < /defaults/patches/snoopy.patch && \
 
 # compile mediainfo packages
  curl -o \

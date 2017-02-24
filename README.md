@@ -92,4 +92,5 @@ Umask can be set in the /config/rtorrent/rtorrent.rc file by changing value in `
 
 ## Versions
 
++ **24.02.17:** Patch a source file to quash rss https bug.
 + **12.12.16:** Intial Release.

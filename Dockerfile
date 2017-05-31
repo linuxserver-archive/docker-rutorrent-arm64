@@ -1,4 +1,4 @@
-FROM lsiobase/alpine.arm64
+FROM lsiobase/alpine.arm64:3.6
 MAINTAINER sparklyballs
 
 # set version label
@@ -12,9 +12,26 @@ ARG MEDIAINF_VER="0.7.94"
 # copy patches
 COPY patches/ /defaults/patches/
 
-# install runtime packages
+
+# install build packages
 RUN \
+ apk add --no-cache --virtual=build-dependencies \
+	autoconf \
+	automake \
+	cppunit-dev \
+	curl-dev \
+	file \
+	g++ \
+	gcc \
+	git \
+	libressl-dev \
+	libtool \
+	make \
+	ncurses-dev && \
+
+# install runtime packages
  apk add --no-cache \
+	ca-certificates \
 	curl \
 	fcgi \
 	ffmpeg \
@@ -35,20 +52,6 @@ RUN \
 	unzip \
 	wget \
 	zip && \
-
-# install build packages
- apk add --no-cache --virtual=build-dependencies \
-	autoconf \
-	automake \
-	cppunit-dev \
-	curl-dev \
-	file \
-	g++ \
-	gcc \
-	libressl-dev \
-	libtool \
-	make \
-	ncurses-dev && \
 
 # install webui
  mkdir -p \
@@ -83,6 +86,7 @@ RUN \
 	/tmp/libmediainfo --strip-components=1 && \
  tar xf /tmp/mediainfo.tar.gz -C \
 	/tmp/mediainfo --strip-components=1 && \
+
  cd /tmp/libmediainfo && \
 	./SO_Compile.sh && \
  cd /tmp/libmediainfo/ZenLib/Project/GNU/Library && \
@@ -99,11 +103,14 @@ RUN \
 	build-dependencies && \
  rm -rf \
 	/etc/nginx/conf.d/default.conf \
-	/tmp/*
+	/tmp/* && \
 
-# add local files
+# fix logrotate
+ sed -i "s#/var/log/messages {}.*# #g" /etc/logrotate.conf
+
+# add local files
 COPY root/ /
 
-# ports and volumes
+# ports and volumes
 EXPOSE 80
 VOLUME /config /downloads

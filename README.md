@@ -99,6 +99,7 @@ peer_exchange = no
 
 ## Versions
 
++ **10.01.18:** Rebase to alpine 3.7.
 + **28.10.17:** Mediainfo moved from testing to community repo.
 + **09.10.17:** Use repo version of mediainfo to shorten build time.
 + **30.05.17:** Rebase to alpine 3.6.
